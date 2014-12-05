@@ -10,10 +10,10 @@
 	<servlet>
 		<servlet-name>TethysLDAPConnector</servlet-name>
     	<servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
-<!-- 		<init-param>
+ 		<init-param>
       		<param-name>com.sun.jersey.config.property.packages</param-name>
-			<param-value>de.dbis.acis.cloud.Tethys;com.wordnik.swagger.sample.util;com.wordnik.swagger.jersey.listing</param-value>
-		</init-param> -->
+			<param-value>de.dbis.acis.cloud.TethysLDAPConnector;com.wordnik.swagger.sample.util;com.wordnik.swagger.jersey.listing</param-value>
+		</init-param> 
         <init-param>
             <param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
             <param-value>true</param-value>
@@ -25,9 +25,9 @@
 		<url-pattern>/*</url-pattern>
 	</servlet-mapping>
 	
-<!--	<servlet>
+	<servlet>
   <servlet-name>JerseyJaxrsConfig</servlet-name>
-...   <servlet-class>com.wordnik.swagger.jersey.config.JerseyJaxrsConfig</servlet-class> ...
+<!--   <servlet-class>com.wordnik.swagger.jersey.config.JerseyJaxrsConfig</servlet-class> -->
   <servlet-class> com.wordnik.swagger.jaxrs.config.DefaultJaxrsConfig</servlet-class>
   <init-param>
     <param-name>api.version</param-name>
@@ -35,14 +35,14 @@
   </init-param>
   <init-param>
     <param-name>swagger.api.basepath</param-name>
-    <param-value>http://137.226.58.11:8081/Tethys</param-value>
+    <param-value>http://@Hostname@:@Port@/@DeployName@</param-value>
   </init-param>
   <init-param>
       <param-name>swagger.filter</param-name>
       <param-value>de.dbis.acis.cloud.Tethys.util.InternalSwaggerFilter</param-value>
     </init-param>
   <load-on-startup>1</load-on-startup>
-</servlet>-->
+</servlet>
 
 <filter>
   <filter-name>CorsFilter</filter-name>
