@@ -73,7 +73,3 @@ $RECYCLE.BIN/
 *.msi
 *.msm
 *.msp
-
-
-##### additional
-build.gradle

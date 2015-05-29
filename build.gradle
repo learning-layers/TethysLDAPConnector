@@ -1,0 +1,101 @@
+//
+// @author Gordon Lawrenz <lawrenz@dbis.rwth-aachen.de>
+//
+// use gradle.properties to define parameters
+// see gradle.properties.example for help
+//
+apply plugin: 'base'
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'eclipse'
+
+import org.gradle.api.file.FileCollection
+import org.apache.tools.ant.filters.ReplaceTokens
+
+task wrapper(type: Wrapper) {
+  gradleVersion = '2.4'
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'org.gradle.api.plugins:gradle-cargo-plugin:1.5.1'
+    }
+}
+
+repositories {
+    mavenCentral()
+    flatDir { dirs "lib" }
+} 
+
+//------------
+//Lists for easier dependency management
+//------------
+
+List swagger = [
+	'com.wordnik:swagger-jersey2-jaxrs_2.11:1.3.12',	//Provides Swagger for Jersey 2.0
+]
+
+List javax = [
+	'org.eclipse.persistence:javax.persistence:2.1.0'
+]
+
+List jersey = [
+	'org.glassfish.jersey.containers:jersey-container-servlet:2.13',
+	'org.glassfish.jersey.containers:jersey-container-servlet-core:2.13',
+	'org.glassfish.jersey.ext:jersey-proxy-client:2.13'
+]
+List google = [
+	'com.google.code.gson:gson:2.2.4'
+]
+
+//------------
+//Dependency for our configurations
+//------------
+dependencies {
+	testCompile	group: 'junit', name: 'junit', version: '4.+'
+	
+	compile		javax, jersey, swagger, google
+	
+	providedCompile	'javax.servlet:javax.servlet-api:3.0.1'	//only for eclipse as tomcat7 already uses servlet-api 3.0
+}
+
+test {
+    systemProperties 'property': 'value'
+}
+
+uploadArchives {
+    repositories {
+       flatDir {
+           dirs 'repos'
+       }
+    }
+}
+
+processResources {
+	from('src/main/resources') {
+		include '*.properties'
+		filter(ReplaceTokens, tokens: ['swaggerWebApplicationName': 'TethysLDAPConnector'])
+		filter(ReplaceTokens, tokens: ['swaggerWebApplicationHost': 'localhost'])
+		filter(ReplaceTokens, tokens: ['swaggerWebApplicationPort': '8080'])
+	}
+}
+
+task stop(type: Exec) {
+    commandLine "${System.env.TOMCAT_HOME}/bin/startup.sh"
+}
+
+task start(type: Exec) {
+	commandLine "${System.env.TOMCAT_HOME}/bin/shutdown.sh"
+}
+
+task deploy(type: Copy) {
+	dependsOn assemble, war
+	from war
+	into "${System.env.TOMCAT_HOME}/webapps"
+}
