@@ -15,6 +15,6 @@ public class RootResource {
 
 	@GET
 	public String test(){
-		return "This Web Application helps making Tethys and Owncloud useable with LDAP users.";
+		return "This Web Application helps making Tethys and Owncloud useable with LDAP users./n";
 	}
 }
